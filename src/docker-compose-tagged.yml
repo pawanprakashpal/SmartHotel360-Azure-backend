@@ -2,26 +2,39 @@ version: '3'
 
 services:
   bookings-api:
-    image: smarthotels/bookings:${TAG:-latest}
+    image: smarthotels/bookings:public
 
   hotels-api:
-    image: smarthotels/hotels:${TAG:-latest}
+    image: smarthotels/hotels:public
 
   suggestions-api:
-    image: smarthotels/suggestions:${TAG:-latest}
+    image: smarthotels/suggestions:public
 
   configuration-api:
-    image: smarthotels/configuration:${TAG:-latest}
+    image: smarthotels/configuration:public
 
   tasks-api:
-    image: smarthotels/tasks:${TAG:-latest}
+    image: smarthotels/tasks:public
+
+  reviews-api:
+    image: smarthotels/reviews:public
+
+  notifications-api:
+    image: smarthotels/notifications:public
+
+  discounts-api:
+    image: smarthotels/discounts:public
+
+
+  profiles-api:
+    image: smarthotels/profiles:public
+
 
   sql-data:
-    image: microsoft/mssql-server-linux:latest
+    image: microsoft/mssql-server-linux:2017-GA
 
-  postgres-data:
-    image: postgres:9.6.5
+  tasks-data:
+    image: postgres:10.1
 
-  mysql-data:
-    image: mysql:5.7
-    
+  reviews-data:
+    image: postgres:10.1
