@@ -1,4 +1,4 @@
-# Smarthotel 360 Backend Architecture
+# SmartHotel360 Backend Architecture
 
 The following picture describes the backend architecture of the SmartHotel360 services:
 
