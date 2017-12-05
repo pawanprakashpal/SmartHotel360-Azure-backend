@@ -1,0 +1,72 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "sql_server_name": {
+      "value": "sh360sql"
+    },
+    "sql_user_name": {
+      "value": "sh360"
+    },
+    "sql_user_password": {
+      "value": "Password!"
+    },
+    "bookings_db_name": {
+      "value": "BookingsDb"
+    },
+    "profiles_db_name": {
+      "value": "ProfilesDb"
+    },
+    "reviews_site_name": {
+      "value": "sh360reviews"
+    },
+    "reviews_db_name": {
+      "value": "ReviewsDb"
+    },    
+    "hotels_db_name": {
+      "value": "HotelsDb"
+    },
+    "suggestions_db_name": {
+      "value": "SuggestionsDb"
+    },
+    "tasks_db_name": {
+      "value": "TasksDb"
+    },
+    "storageImages_name": {
+      "value": "sh360img"
+    },
+    "storageAccountType": {
+      "value": "Standard_LRS"
+    },    
+    "postgres_server_name": {
+      "value": "sh360postgres"
+    },    
+    "postgres_user_name": {
+      "value": "sh360"
+    },
+    "postgres_user_password": {
+      "value": "Password!"
+    },
+    "postgresDTU": {
+      "value": 100
+    },
+    "postgresSkuName": {
+      "value": "PostgreSQLB100"
+    },
+    "postgresSkuSizeMB": {
+      "value": 51200
+    },
+    "postgresSkuTier": {
+      "value": "Basic"
+    },
+    "postgresqlVersion": {
+      "value": "9.6"
+    },        
+    "environment": {
+      "value": "public"
+    },
+    "unique_resources": {
+      "value": true
+    }
+  }
+}

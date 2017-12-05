@@ -1,0 +1,19 @@
+* myCA.key is the key of the "Connect 2017" CA. Password for myCA.key is connect2017
+
+If you need to create one cert for one SSL environment do the following:
+
+* Generate private key
+	* openssl genrsa -out <my-key-file>.key 2048
+* Create a certificate signing request:
+	* openssl req -new -key <my-key-file>.key -out <my-csr-file>.csr
+* Create one parameter file containing the SNA (look environments/k8sdev/ks8dev file for a sample).
+	* Ensure that DNS.1 entry has the DNS of your new environment
+* Generate certificate (crt)
+	* openssl x509 -req -in <my-csr-file>.csr -CA myCA.pem -CAkey myCA.key -CAcreateserial -out <my-crt-file>.crt -days 1825 -sha256 -extfile <my-parameter-file>
+
+* This CRT is the one **you must install in the server**
+
+
+* The myCA.key MUST BE installed as a "Trusted root CA" in every client.
+
+More info on: https://deliciousbrains.com/ssl-certificate-authority-for-local-https-development/

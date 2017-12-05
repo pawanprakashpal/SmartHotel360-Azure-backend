@@ -1,0 +1,1 @@
+& .\deploy.ps1 -imageTag public -configFile .\conf_public.yml -loadBalancerIp a.b.c.d -buildImages $false -pushImages $false -deployFrontend $false -useSSL $true -sslCertificate your-cert-name

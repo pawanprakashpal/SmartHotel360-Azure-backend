@@ -1,0 +1,27 @@
+version: '3'
+
+services:
+  bookings-api:
+    image: smarthotels/bookings:${TAG:-latest}
+
+  hotels-api:
+    image: smarthotels/hotels:${TAG:-latest}
+
+  suggestions-api:
+    image: smarthotels/suggestions:${TAG:-latest}
+
+  configuration-api:
+    image: smarthotels/configuration:${TAG:-latest}
+
+  tasks-api:
+    image: smarthotels/tasks:${TAG:-latest}
+
+  sql-data:
+    image: microsoft/mssql-server-linux:latest
+
+  postgres-data:
+    image: postgres:9.6.5
+
+  mysql-data:
+    image: mysql:5.7
+    
