@@ -28,7 +28,7 @@ data:
   Tasks_sql_user_password: Passw0rd!
   Reviews_sql_server_url: jdbc:postgresql://...
   Reviews_sql_user_name: sh360
-  Reviews_sql_user_password: PaPassw0rd!sword!
-  ApplicationInsights__InstrumentationKey: ID_APPINSIHTS
+  Reviews_sql_user_password: Passw0rd!
+  ApplicationInsights__InstrumentationKey: ID_APPINSIGHTS
   Discounts_profilesvc: http://profiles/
   Profiles_ConnectionStrings__DefaultConnection: Server=...
