@@ -130,7 +130,9 @@ If you run your own Kubernetes cluster and want to connect the public web and th
 To do it, open the `/src/SmartHotel.Services.Configuration/cfg` folder and create a new file `myenv.json`. Use the  `localhost-docker.json` file as a template. You need to update:
 
 * The `urls` section with the urls of your services.
-* The `pets_config` section (only if you want to recreate the pets demo on local)
+* The `pets_config` section (only if you want to recreate the bring your pet demo on local)
+
+> **Note** The bring your pet demo is included in the [Public Web repository][https://github.com/Microsoft/SmartHotel360-public-web/]. Is the public web which contains the deployment scripts for the pets demo. You need an Azure Function, Storage, CosmosDB and Vision API to run it. For more info please go to the [instructions in the public web repo](https://github.com/Microsoft/SmartHotel360-public-web/blob/master/doc/pet-demo.md).
 
 ## Urls section
 
