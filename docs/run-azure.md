@@ -102,15 +102,91 @@ kubectl delete pods $(kubectl get pods -o go-template --template @"
 
 > **Note** Not all changes require a redeploy on the cluster: if you just change the Docker image you can simply delete all pods. If you change the configuration map you can recreate it and then delete the pods. But if you are unsure, redeploying the services (but not the `frontend` one) and then deleting the `frontend` pod will do the trick.
 
-If you wonder why we don't redeploy the frontend service this is because, Kubernetes requires a free IP on Azure. When the frontend is first created it is tied to the Azure IP specified. But when the frontend service is deleted (what happens if you redeploy the frontend service) the IP is not released (you must do it manually from portal). So, when the frontend service is created again it can't be bound to the IP.
+If you wonder why we don't redeploy the frontend service this is because, Kubernetes requires a free IP on Azure. When the frontend is first created it is tied to the Azure IP specified. But when the frontend service is deleted (what happens if you redeploy the frontend service) the IP is not released (you must do it manually from portal). So, when the frontend service is created again it can't be bound to the IP.~
 
-# Securing the cluster
+## Configuration files
 
- If you use `-useSSL $true` when deploying in the cluster, support for SSL will be added: the frontend service will be configured to accept SSL connections, but you are required to provide a valid SSL certificate to use. For providing the certificate you have to:
+The `-configFile` parameter sets the configuration file to configure all the services on the cluster. The `/deploy/k8s/conf_local.yml` is a sample of this configuration file. All entries are mandatory, and you can retrieve its values from the Azure portal.
 
- 1. Must deploy the certificate (`.crt` file) and the private key (`.key` file) in the `/deploy/k8s/certs-nginx` folder. But files must have the same name and the extensions `.crt` and `.key`.
- 2. Use the parameter `-sslCertificate [value]` where `[value]` is the name of the files (no extension, just the name)
+> **Note**: The AAD B2C values that are in the file are only valid for the services hosted in the public endpoint. You can leave as it if you don't want to use B2C. If you want to use your own B2C you need to update those values.
 
- > **Note**: To create the certificate and the private key files see the file `/deploy/connect_certs/instructions.txt`. **It is strongly suggested to run the commands listed on the file using the WSL** or use a Linux distro. A CA certificate is also provided (you can create your own if you want). Remember you have to install the CA certificate as a "Trusted Root CA" in every client (if not the browser won't accept the cluster certificate). To install the CA certificate on a Windows client run the `/deploy/connect_certs/install_ca.cmd` as an Administrator.
+## Securing the cluster
 
- > **Note**: The only reason to secure the cluster is if you want to plan to access it from the web under https. This is required only for Azure B2C. If B2C is not used, you don't have to secure the k8s cluster.
+If you use `-useSSL $true` when deploying in the cluster, support for SSL will be added: the frontend service will be configured to accept SSL connections, but you are required to provide a valid SSL certificate to use. For providing the certificate you have to:
+
+1. Must deploy the certificate (`.crt` file) and the private key (`.key` file) in the `/deploy/k8s/certs-nginx` folder. But files must have the same name and the extensions `.crt` and `.key`.
+2. Use the parameter `-sslCertificate [value]` where `[value]` is the name of the files (no extension, just the name)
+
+> **Note**: To create the certificate and the private key files see the file `/deploy/connect_certs/instructions.txt`. **It is strongly suggested to run the commands listed on the file using the WSL** or use a Linux distro. A CA certificate is also provided (you can create your own if you want). Remember you have to install the CA certificate as a "Trusted Root CA" in every client (if not the browser won't accept the cluster certificate). To install the CA certificate on a Windows client run the `/deploy/connect_certs/install_ca.cmd` as an Administrator.
+
+> **Note**: The only reason to secure the cluster is if you want to plan to access it from the web under https. This is required only for Azure B2C. If B2C is not used, you don't have to secure the k8s cluster.
+
+# The configuration service
+
+If you run your own Kubernetes cluster and want to connect the public web and the Xamarin application to it you **need to update the configuration servide** to reflect your new endpoints.
+
+> Note that this prevents you to use the public DockerHub images. You must build the images yourself, and push to your own Docker repository. Remember that `docker-compose build` will build the images without any other requirement.
+
+To do it, open the `/src/SmartHotel.Services.Configuration/cfg` folder and create a new file `myenv.json`. Use the  `localhost-docker.json` file as a template. You need to update:
+
+* The `urls` section with the urls of your services.
+* The `pets_config` section (only if you want to recreate the pets demo on local)
+
+## Urls section
+
+When running on Kubernetes all services share the same IP (the public IP created when deploying in the cluster). All services are exposed in `http://<public-ip>` with following paths:
+
+* /hotels-api -> For hotels
+* /bookings-api -> For bookings
+* /suggestions-api -> For suggestions
+* /tasks-api -> For tasks
+* /notifications-api -> For notifications
+* /reviews-api -> For reviews
+* /discounts-api -> For discounts
+
+So, if your public IP is http://a.b.c.d then the endpoint for Hotels API is http://a.b.c.d/hotels-api
+
+> **Note**: Xamarin app do not support https, so must use http if plan to use Xamarin App.
+
+> **Note**: You can create more than one configuration by just creating more files in the `/src/SmartHotel.Services.Configuration/cfg` folder. Then you can go to http://a.b.c.d/configuration-api/cfg to list all configurations and to http://a.b.c.d/configuration-api/cfg/[config] to load the configuration file named `[config.json]`.
+
+Of course once you dropped this file **you must recreate the Docker image of the configuration api** by typing (located in `/src` folder):
+
+```
+docker-compose build configuration-api
+```
+
+Once the image is rebuilt you have to repush it to the repository and then redeploy the services on the cluster. Finally check the cluster has the updated configuration service by accessing your new configuration endpoint.
+
+# Azure B2C
+
+If you want to use B2C you must create your own B2C and then create applications on it:
+
+* One application for the client (web & Xamarin)
+* One application for the hotels api
+* One application for the bookings api
+* One application for the notifications api
+
+## API applications
+
+All three applications for the APIs share the same config:
+
+![API configuration for the b2c](./b2c-api.png)
+
+Once configured be sure that in the section "Published scopes" of each API application the scope "user_impersonation" is defined (if not, add it yourself):
+
+![user_impersonation scope](./b2c-scope.png)
+
+## Client application
+
+The client application should have a configuration like:
+
+![Client application b2c config](./b2c-client.png)
+
+Also in the "API Access" section you need to grant access to the three APIs applications:
+
+![Client application b2c api access](./b2c-api-access.png)
+
+With this configuration client app is given access to all three APIs secured by B2C.
+
+> **Note** Remember to update the _configuration file_ (i. e. the `conf_local.yml`) file with the B2C values and redeploy the k8s cluster.
