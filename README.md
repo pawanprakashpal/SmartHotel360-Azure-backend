@@ -12,7 +12,7 @@ For this reference app scenario, we built several consumer and line-of-business 
 * [Mobile Apps](https://github.com/Microsoft/SmartHotel360-mobile-desktop-apps)
 * [Sentiment Analysis](https://github.com/Microsoft/SmartHotel360-Sentiment-Analysis-App)
 
-**Note:** This document is about the backend services.
+**Note:** This document is about SmartHotel360 Azure Backend Services and Architecture
 
 # SmartHotel360 - Backend Services
 
